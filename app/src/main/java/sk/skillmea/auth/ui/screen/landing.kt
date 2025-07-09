@@ -2,7 +2,6 @@ package sk.skillmea.auth.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.colorBlack
 import sk.skillmea.auth.ui.colorWhite
-import sk.skillmea.auth.ui.inputTextStyle
+import sk.skillmea.auth.ui.textStyleBodyRegular
 import sk.skillmea.auth.ui.widget.SkillmeaButton
 
 @Composable
@@ -42,13 +41,13 @@ fun LandingScreen(
         Column(Modifier.align(Alignment.BottomCenter).padding(vertical = 32.dp, horizontal = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Welcome to Classroom", color = colorWhite, fontWeight = FontWeight.Black, fontSize = 28.sp, lineHeight = 40.sp, textAlign = TextAlign.Center)
             Spacer(Modifier.height(12.dp))
-            Text("Join over 10.000 learners over the World and enjoy online education!", style = inputTextStyle, color = colorWhite, textAlign = TextAlign.Center)
+            Text("Join over 10.000 learners over the World and enjoy online education!", style = textStyleBodyRegular, color = colorWhite, textAlign = TextAlign.Center)
             Spacer(Modifier.height(32.dp))
             SkillmeaButton("Create an account", { onSignIn() }, backgroundColor = colorWhite, textColor = colorBlack)
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Already have an account?", color = colorWhite, style = inputTextStyle)
-                Text("Log in", modifier = Modifier.clickable { onLogIn() }.padding(8.dp), color = colorWhite, style = inputTextStyle, fontWeight = FontWeight.SemiBold)
+                Text("Already have an account?", color = colorWhite, style = textStyleBodyRegular)
+                Text("Log in", modifier = Modifier.clickable { onLogIn() }.padding(8.dp), color = colorWhite, style = textStyleBodyRegular, fontWeight = FontWeight.SemiBold)
             }
         }
     }

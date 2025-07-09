@@ -2,6 +2,7 @@ package sk.skillmea.auth.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 val colorWhite = Color(0xFFFFFFFF)
@@ -20,15 +21,9 @@ val borderColor = Color(0xFF9EA1A8)
 val textColor = Color(0xFF121A2C)
 val textColorHint = Color(0xFF9EA1A8)
 
-val inputTextStyle = TextStyle(
-    color = textColor,
-    fontSize = 16.sp,
-    letterSpacing = 0.sp,
-    lineHeight = 25.6.sp
-)
-val hintTextStyle = TextStyle(
-    color = textColorHint,
-    fontSize = 14.sp,
-    letterSpacing = 0.sp,
-    lineHeight = 21.sp
-)
+val textStyleHeading3 = TextStyle(color = colorBlack, fontSize = 20.sp, letterSpacing = 0.sp, lineHeight = 28.sp, fontWeight = FontWeight.Bold)
+val textStyleBodyRegular = TextStyle(color = textColor, fontSize = 16.sp, letterSpacing = 0.sp, lineHeight = 25.6.sp)
+val textStyleBodySemiBold = textStyleBodyRegular.copy(fontWeight = FontWeight.SemiBold)
+
+val textCaptionRegular = TextStyle(color = colorGrey700, fontSize = 14.sp, letterSpacing = 0.sp, lineHeight = 21.sp, fontWeight = FontWeight.Normal)
+val hintTextStyle = textCaptionRegular.copy(color = textColorHint)

@@ -34,7 +34,7 @@ import sk.skillmea.auth.ui.colorGrey900
 import sk.skillmea.auth.ui.colorViolet300
 import sk.skillmea.auth.ui.colorViolet600
 import sk.skillmea.auth.ui.colorWhite
-import sk.skillmea.auth.ui.inputTextStyle
+import sk.skillmea.auth.ui.textStyleBodyRegular
 
 @Composable
 fun SkillmeaButton(
@@ -66,7 +66,7 @@ fun SkillmeaButton(
                 )
                 Spacer(Modifier.width(10.dp))
             }
-            Text(text, style = inputTextStyle, fontWeight = FontWeight.SemiBold, color = textColor ?: colorWhite)
+            Text(text, style = textStyleBodyRegular, fontWeight = FontWeight.SemiBold, color = textColor ?: colorWhite)
         }
     }
 }
@@ -90,7 +90,7 @@ private fun SkillmeaSocialButton(
         ) {
             Image(icon, null)
             Spacer(Modifier.width(8.dp))
-            Text(text, style = inputTextStyle, fontWeight = FontWeight.Medium, color = colorGrey900)
+            Text(text, style = textStyleBodyRegular, fontWeight = FontWeight.Medium, color = colorGrey900)
         }
     }
 }

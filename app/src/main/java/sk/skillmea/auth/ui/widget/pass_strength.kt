@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.colorGrey800
-import sk.skillmea.auth.ui.inputTextStyle
+import sk.skillmea.auth.ui.textStyleBodyRegular
 
 @Composable
 fun PasswordStrengthValidator(
@@ -89,7 +89,7 @@ private fun PasswordValidatorRow(
         } else {
             Box(Modifier.border(1.dp, Color(0xFF9D9AA4), CircleShape).size(16.dp))
         }
-        Text(text, style = inputTextStyle, color = colorGrey800)
+        Text(text, style = textStyleBodyRegular, color = colorGrey800)
     }
 }
 

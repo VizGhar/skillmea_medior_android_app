@@ -1,28 +1,21 @@
 package sk.skillmea.auth.ui.widget
 
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -32,13 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,12 +37,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.borderColor
 import sk.skillmea.auth.ui.colorGrey700
 import sk.skillmea.auth.ui.hintTextStyle
-import sk.skillmea.auth.ui.inputTextStyle
+import sk.skillmea.auth.ui.textStyleBodyRegular
 
 @Composable
 fun SkillmeaTextField(
@@ -79,7 +69,7 @@ fun SkillmeaTextField(
         horizontalAlignment = Alignment.Start
     ) {
         if (hintText.isNotEmpty()) {
-            Text(hintText, style = inputTextStyle)
+            Text(hintText, style = textStyleBodyRegular)
         }
         BasicTextField(
             value = value,
@@ -87,7 +77,7 @@ fun SkillmeaTextField(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             readOnly = readOnly,
-            textStyle = inputTextStyle,
+            textStyle = textStyleBodyRegular,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             maxLines = maxLines,
@@ -135,7 +125,7 @@ fun SkillmeaPasswordTextField(
         horizontalAlignment = Alignment.Start
     ) {
         if (hintText.isNotEmpty()) {
-            Text(hintText, style = inputTextStyle)
+            Text(hintText, style = textStyleBodyRegular)
         }
         BasicTextField(
             value = value,
@@ -143,7 +133,7 @@ fun SkillmeaPasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             readOnly = readOnly,
-            textStyle = inputTextStyle,
+            textStyle = textStyleBodyRegular,
             keyboardOptions = KeyboardOptions(autoCorrectEnabled = false, capitalization = KeyboardCapitalization.None, imeAction = ImeAction.Go, keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions(onGo = onAction),
             maxLines = 1,
