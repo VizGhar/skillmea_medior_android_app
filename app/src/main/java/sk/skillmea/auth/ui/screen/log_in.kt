@@ -27,7 +27,7 @@ import sk.skillmea.auth.ui.widget.SkillmeaToolbar
 import sk.skillmea.auth.ui.widget.SkillmeaToolbarType
 
 @Composable
-fun LogInScreen(onBack: () -> Unit, onEmailSignIn: () -> Unit) {
+fun LogInScreen(onBack: () -> Unit, onEmailLogIn: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().systemBarsPadding().padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -36,7 +36,7 @@ fun LogInScreen(onBack: () -> Unit, onEmailSignIn: () -> Unit) {
         Spacer(Modifier.height(24.dp))
         Text("Welcome back!\nLet’s continue learning", style = textStyleBodyRegular, textAlign = TextAlign.Center)
         Spacer(Modifier.height(32.dp))
-        SkillmeaButton("Continue with email", onEmailSignIn)
+        SkillmeaButton("Continue with email", onEmailLogIn)
         Spacer(Modifier.height(20.dp))
         Text("or", style = textStyleBodySemiBold)
         Spacer(Modifier.height(20.dp))

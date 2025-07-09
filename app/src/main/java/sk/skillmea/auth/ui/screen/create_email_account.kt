@@ -79,7 +79,7 @@ fun CreateEmailAccountScreen(
 
 @Composable
 fun CreateEmailAccountSuccessfulScreen(
-    onBack: () -> Unit
+    goToLogin: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -95,7 +95,7 @@ fun CreateEmailAccountSuccessfulScreen(
         Spacer(Modifier.height(12.dp))
         Text("Only one click to explore online education.", style = textStyleBodyRegular, textAlign = TextAlign.Center)
         Spacer(Modifier.height(24.dp))
-        SkillmeaButton("Log in", onBack)
+        SkillmeaButton("Log in", goToLogin)
         Spacer(Modifier.weight(1f))
         SkillmeaTermsAndPrivacy()
         Spacer(Modifier.height(40.dp))
