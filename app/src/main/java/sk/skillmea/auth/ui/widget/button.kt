@@ -42,14 +42,16 @@ fun SkillmeaButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    progress: Boolean = false
+    progress: Boolean = false,
+    backgroundColor: Color? = null,
+    textColor: Color? = null
 ) {
     Box(modifier) {
         Row(
             Modifier.fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .clickable(enabled) { onClick() }
-                .background(if (enabled) colorViolet600 else colorViolet300)
+                .background(backgroundColor ?: if (enabled) colorViolet600 else colorViolet300)
                 .padding(vertical = 20.dp, horizontal = 24.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -64,7 +66,7 @@ fun SkillmeaButton(
                 )
                 Spacer(Modifier.width(10.dp))
             }
-            Text(text, style = inputTextStyle, fontWeight = FontWeight.SemiBold, color = colorWhite)
+            Text(text, style = inputTextStyle, fontWeight = FontWeight.SemiBold, color = textColor ?: colorWhite)
         }
     }
 }
