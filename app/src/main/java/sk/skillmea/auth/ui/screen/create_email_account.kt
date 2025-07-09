@@ -44,6 +44,7 @@ import sk.skillmea.auth.ui.widget.SkillmeaTermsAndPrivacy
 import sk.skillmea.auth.ui.widget.SkillmeaTextField
 import sk.skillmea.auth.ui.widget.SkillmeaToolbar
 import sk.skillmea.auth.ui.widget.SkillmeaToolbarType
+import sk.skillmea.auth.util.isValidEmail
 
 @Composable
 fun CreateEmailAccountScreen(
@@ -97,7 +98,6 @@ private fun CreateAccountScreenContent(
 @Composable
 private fun ColumnScope.CreateAccountScreenStep1() {
     var email by remember { mutableStateOf("") }
-    val validEmail = (email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches())
 
     Column(modifier = Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SkillmeaTextField(
@@ -106,7 +106,7 @@ private fun ColumnScope.CreateAccountScreenStep1() {
             placeholderText = "example@example.com",
             hintText = "Email"
         )
-        SkillmeaButton("Create an account", onClick = {}, enabled = validEmail)
+        SkillmeaButton("Create an account", onClick = {}, enabled = email.isValidEmail)
     }
 }
 

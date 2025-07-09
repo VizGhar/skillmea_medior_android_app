@@ -17,6 +17,7 @@ val colorViolet200 = Color(0xFFCFB0F0)
 val colorViolet300 = Color(0xFFB88AE8)
 val colorDarkGrey900 = Color(0xFF121A2C)
 
+val colorError = Color(0xFFD62828)
 val borderColor = Color(0xFF9EA1A8)
 val textColor = Color(0xFF121A2C)
 val textColorHint = Color(0xFF9EA1A8)
