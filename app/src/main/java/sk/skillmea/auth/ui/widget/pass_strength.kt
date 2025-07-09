@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,7 @@ import sk.skillmea.auth.ui.textStyleBodyRegular
 @Composable
 fun PasswordStrengthValidator(
     password: String,
+    onAcceptStatusChanges: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     validatorTexts: List<String> = listOf(
         "8 characters minimum",
@@ -49,6 +51,10 @@ fun PasswordStrengthValidator(
         throw IllegalArgumentException()
     }
 
+    LaunchedEffect(validators.all { it(password) }) {
+        onAcceptStatusChanges(validators.all { it(password) })
+    }
+
     val passed = validators.map { it(password) }
     val color = (passed.count { it } - 1).takeIf { it >= 0 }?.let{ colors[it] }
 
@@ -67,14 +73,15 @@ fun PasswordStrengthValidator(
 }
 
 @Composable
-fun FullPasswordInput(
+fun SkillmeaFullPasswordInput(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onAcceptStatusChanges: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        SkillmeaPasswordTextField(value, onValueChange)
-        PasswordStrengthValidator(value)
+        SkillmeaPasswordTextField(value, onValueChange, hintText = "Password")
+        PasswordStrengthValidator(value, onAcceptStatusChanges)
     }
 }
 
@@ -96,11 +103,11 @@ private fun PasswordValidatorRow(
 @Preview(showSystemUi = true)
 @Composable
 private fun PasswordStrengthValidatorPreview() {
-    PasswordStrengthValidator("ord1#", modifier = Modifier.systemBarsPadding())
+    PasswordStrengthValidator("ord1#", {}, modifier = Modifier.systemBarsPadding())
 }
 
 @Preview(showSystemUi = true)
 @Composable
 private fun FullPasswordInputPreview() {
-    FullPasswordInput("ord1#", {}, modifier = Modifier.systemBarsPadding())
+    SkillmeaFullPasswordInput("ord1#", {}, {}, modifier = Modifier.systemBarsPadding())
 }

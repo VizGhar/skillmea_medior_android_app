@@ -23,6 +23,7 @@ import sk.skillmea.auth.ui.textStyleBodySemiBold
 import sk.skillmea.auth.ui.widget.SkillmeaButton
 import sk.skillmea.auth.ui.widget.SkillmeaFacebookButton
 import sk.skillmea.auth.ui.widget.SkillmeaGoogleButton
+import sk.skillmea.auth.ui.widget.SkillmeaTermsAndPrivacy
 import sk.skillmea.auth.ui.widget.SkillmeaToolbar
 import sk.skillmea.auth.ui.widget.SkillmeaToolbarType
 
@@ -44,14 +45,7 @@ fun SignInScreen(onBack: () -> Unit, onEmailSignIn: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         SkillmeaGoogleButton({})
         Spacer(Modifier.weight(1f))
-        val bottomText = buildAnnotatedString {
-            append("By using Classroom, you agree to the\n")
-            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("Terms") }
-            append(" and ")
-            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) { append("Privacy Policy") }
-            append(".")
-        }
-        Text(bottomText, style = textCaptionRegular, textAlign = TextAlign.Center)
+        SkillmeaTermsAndPrivacy()
         Spacer(Modifier.height(40.dp))
     }
 }

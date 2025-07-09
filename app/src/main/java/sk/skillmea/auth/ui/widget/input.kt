@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -35,11 +36,14 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.borderColor
 import sk.skillmea.auth.ui.colorGrey700
+import sk.skillmea.auth.ui.colorViolet300
+import sk.skillmea.auth.ui.colorViolet600
 import sk.skillmea.auth.ui.hintTextStyle
 import sk.skillmea.auth.ui.textStyleBodyRegular
 
@@ -52,6 +56,8 @@ fun SkillmeaTextField(
     hintText: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    center: Boolean = false,
+    glow: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
@@ -77,7 +83,7 @@ fun SkillmeaTextField(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             readOnly = readOnly,
-            textStyle = textStyleBodyRegular,
+            textStyle = textStyleBodyRegular.copy(textAlign = if (center) TextAlign.Center else TextAlign.Start),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             maxLines = maxLines,
@@ -89,12 +95,14 @@ fun SkillmeaTextField(
             decorationBox = {
                 Row(
                     modifier = Modifier
+                        .then(if (glow) Modifier.border(2.dp, Color(0x1E6400CD), RoundedCornerShape(14.dp)) else Modifier)
+                        .padding(2.dp)
                         .border(1.dp, borderColor, RoundedCornerShape(12.dp))
                         .padding(vertical = 11.dp, horizontal = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Box(modifier = Modifier.weight(1f)) {
+                    Box(modifier = Modifier.weight(1f), contentAlignment = if (center) Alignment.Center else Alignment.CenterStart) {
                         it()
                         if (value.isEmpty()) { Text(placeholderText, style = hintTextStyle, maxLines = 1) }
                     }
@@ -145,6 +153,7 @@ fun SkillmeaPasswordTextField(
             decorationBox = {
                 Row(
                     modifier = Modifier
+                        .padding(2.dp)
                         .border(1.dp, borderColor, RoundedCornerShape(12.dp))
                         .padding(vertical = 11.dp, horizontal = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -166,13 +175,13 @@ fun SkillmeaPasswordTextField(
 
 @Preview(showSystemUi = true)
 @Composable
-fun SkillmeaTextFieldPreview() {
+private fun SkillmeaTextFieldPreview() {
     var passText by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.systemBarsPadding().fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        SkillmeaTextField("Sample", {}, placeholderText = "Skillmea", hintText = "Skillmea", modifier = Modifier.fillMaxWidth(), trailingIcon = { Icon(painterResource(R.drawable.ic_eye_off), contentDescription = null, tint = colorGrey700) })
+        SkillmeaTextField("Sample", {}, placeholderText = "Skillmea", hintText = "Skillmea", modifier = Modifier.fillMaxWidth(), trailingIcon = { Icon(painterResource(R.drawable.ic_eye_off), contentDescription = null, tint = colorGrey700) }, glow = true)
         SkillmeaTextField("", {}, placeholderText = "Skillmea", hintText = "Skillmea", modifier = Modifier.fillMaxWidth(), trailingIcon = { Icon(painterResource(R.drawable.ic_eye_on), contentDescription = null, tint = colorGrey700) })
         SkillmeaPasswordTextField(passText, { passText = it }, placeholderText = "Skillmea", hintText = "Skillmea", modifier = Modifier.fillMaxWidth())
     }

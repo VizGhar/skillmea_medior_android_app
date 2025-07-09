@@ -11,11 +11,11 @@ val colorGrey900 = Color(0xFF3A383F)
 val colorGrey800 = Color(0xFF4C4A53)
 val colorGrey700 = Color(0xFF605D67)
 val colorGrey300 = Color(0xFFC7C5CC)
+val colorGrey100 = Color(0xFFEDECEF)
 val colorViolet600 = Color(0xFF6400CD)
+val colorViolet200 = Color(0xFFCFB0F0)
 val colorViolet300 = Color(0xFFB88AE8)
 val colorDarkGrey900 = Color(0xFF121A2C)
-
-
 
 val borderColor = Color(0xFF9EA1A8)
 val textColor = Color(0xFF121A2C)
