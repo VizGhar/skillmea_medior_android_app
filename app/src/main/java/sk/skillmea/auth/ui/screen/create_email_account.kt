@@ -1,7 +1,7 @@
 package sk.skillmea.auth.ui.screen
 
-import android.util.Patterns
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,9 +30,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import sk.skillmea.auth.R
+import sk.skillmea.auth.ui.colorBlack
 import sk.skillmea.auth.ui.colorDarkGrey900
 import sk.skillmea.auth.ui.textCaptionRegular
 import sk.skillmea.auth.ui.textStyleBodyRegular
@@ -70,6 +75,31 @@ fun CreateEmailAccountScreen(
         onBack = onBack,
         step = step
     )
+}
+
+@Composable
+fun CreateEmailAccountSuccessfulScreen(
+    onBack: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(40.dp))
+        Image(painter = painterResource(R.drawable.account_created), contentDescription = null)
+        Spacer(Modifier.height(32.dp))
+        Text("Your account\nwas successfully created!", color = colorBlack, fontWeight = FontWeight.Black, fontSize = 28.sp, lineHeight = 40.sp, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(12.dp))
+        Text("Only one click to explore online education.", style = textStyleBodyRegular, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(24.dp))
+        SkillmeaButton("Log in", onBack)
+        Spacer(Modifier.weight(1f))
+        SkillmeaTermsAndPrivacy()
+        Spacer(Modifier.height(40.dp))
+    }
 }
 
 @Composable
@@ -180,8 +210,15 @@ private fun CreateAccountScreenPreview1() {
 private fun CreateAccountScreenPreview2() {
     CreateAccountScreenContent("Verify your email 2/3", { CreateAccountScreenStep2("jon@snow.com") }, onBack = {}, step = 1)
 }
+
 @Preview(showSystemUi = true)
 @Composable
 private fun CreateAccountScreenPreview3() {
     CreateAccountScreenContent("Create your password 3/3", { CreateAccountScreenStep3() }, onBack = {}, step = 2)
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun CreateEmailAccountSuccessfulScreenPreview() {
+    CreateEmailAccountSuccessfulScreen({ })
 }
