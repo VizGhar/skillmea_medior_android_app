@@ -2,4 +2,13 @@
 <resources>
 
     <style name="Theme.SkillmeaAuth" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.SkillmeaAuth.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FFFF7232</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/splash_branding_image</item>
+        <item name="postSplashScreenTheme">@style/Theme.SkillmeaAuth</item>
+    </style>
+
 </resources>

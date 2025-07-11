@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import sk.skillmea.auth.ui.screen.CreateEmailAccountScreen
 import sk.skillmea.auth.ui.screen.CreateEmailAccountSuccessfulScreen
 import sk.skillmea.auth.ui.screen.LandingScreen
@@ -37,6 +38,7 @@ sealed interface Screen {
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
