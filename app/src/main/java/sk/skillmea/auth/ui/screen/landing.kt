@@ -34,7 +34,7 @@ fun LandingScreen(
 ) {
     Box(Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.content_wrapper),
+            painter = painterResource(R.drawable.onboarding_1),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
