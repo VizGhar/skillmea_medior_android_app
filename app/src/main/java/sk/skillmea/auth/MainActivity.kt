@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     Screen.Landing -> LandingScreen(onSignIn = { backStack += Screen.SignIn }, onLogIn = { backStack += Screen.LogIn })
 
                     Screen.SignIn -> SignInScreen(onBack = goBack, onEmailSignIn = { backStack += Screen.CreateEmailAccount })
-                    Screen.CreateEmailAccount -> CreateEmailAccountScreen(goBack)
+                    Screen.CreateEmailAccount -> CreateEmailAccountScreen(goBack) { backStack += Screen.CreateEmailAccountSuccess }
                     Screen.CreateEmailAccountSuccess -> CreateEmailAccountSuccessfulScreen { backStack = backStack.dropLastWhile { it !is Screen.Landing } + Screen.LogIn }
 
                     Screen.LogIn -> LogInScreen(onBack = goBack, onEmailLogIn = { backStack += Screen.LoginWithEmail})

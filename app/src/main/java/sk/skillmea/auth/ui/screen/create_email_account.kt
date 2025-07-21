@@ -1,5 +1,6 @@
 package sk.skillmea.auth.ui.screen
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.colorBlack
 import sk.skillmea.auth.ui.colorDarkGrey900
@@ -53,11 +56,14 @@ import sk.skillmea.auth.util.isValidEmail
 
 @Composable
 fun CreateEmailAccountScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onSuccess: () -> Unit
 ) {
     var step by remember { mutableIntStateOf(0) }
     var email by remember { mutableStateOf("") }
     BackHandler(step > 0) { step-- }
+
+    val viewModel = viewModel<CreateEmailAccountViewModel>()
 
     CreateAccountScreenContent(
         when(step) {
@@ -67,9 +73,9 @@ fun CreateEmailAccountScreen(
         },
         {
             when (step) {
-                0 -> CreateAccountScreenStep1()
-                1 -> CreateAccountScreenStep2(email)
-                else -> CreateAccountScreenStep3()
+                0 -> CreateAccountScreenStep1(viewModel) { step = 1 }
+                1 -> CreateAccountScreenStep2(viewModel, email) { step = 2 }
+                else -> CreateAccountScreenStep3(viewModel) { onSuccess() }
             }
         },
         onBack = onBack,
@@ -126,25 +132,51 @@ private fun CreateAccountScreenContent(
 }
 
 @Composable
-private fun ColumnScope.CreateAccountScreenStep1() {
+private fun ColumnScope.CreateAccountScreenStep1(
+    viewModel: CreateEmailAccountViewModel,
+    onSuccess: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    val apiStatus by viewModel.emailSharedFlow.collectAsState(ApiCom.Idle())
+
+    LaunchedEffect(apiStatus) {
+        if (apiStatus is ApiCom.Success) { onSuccess() }
+    }
+
+    Column(modifier = Modifier
+        .weight(1f)
+        .fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SkillmeaTextField(
             email,
             { email = it },
             placeholderText = "example@example.com",
             hintText = "Email"
         )
-        SkillmeaButton("Create an account", onClick = {}, enabled = email.isValidEmail)
+        SkillmeaButton("Create an account", onClick = {
+            viewModel.sendEmail(email)
+        },
+            enabled = email.isValidEmail && apiStatus !is ApiCom.Loading,
+            progress = apiStatus is ApiCom.Loading
+        )
     }
 }
 
 @Composable
-private fun ColumnScope.CreateAccountScreenStep2(email: String) {
+private fun ColumnScope.CreateAccountScreenStep2(
+    viewModel: CreateEmailAccountViewModel,
+    email: String,
+    onSuccess: () -> Unit
+) {
     var code by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
+    val apiStatus by viewModel.codeSharedFlow.collectAsState(ApiCom.Idle())
+
+    LaunchedEffect(apiStatus) {
+        if (apiStatus is ApiCom.Success) { onSuccess() }
+    }
 
     LaunchedEffect(code) {
         if (code.length == 5) {
@@ -152,35 +184,60 @@ private fun ColumnScope.CreateAccountScreenStep2(email: String) {
         }
     }
 
-    Column(modifier = Modifier.weight(1f).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier
+        .weight(1f)
+        .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("We just sent 5-digit code to $email, enter it bellow:", style = textStyleBodyRegular, textAlign = TextAlign.Center)
         Spacer(Modifier.height(15.dp))
-        BasicTextField(code, { code = it.take(5) }, modifier = Modifier.drawWithContent { }.height(1.dp).focusRequester(focusRequester))
+        BasicTextField(code, { code = it.take(5) }, modifier = Modifier
+            .drawWithContent { }
+            .height(1.dp)
+            .focusRequester(focusRequester))
         Text("Code", style = textCaptionRegular, color = colorDarkGrey900, modifier = Modifier.align(Alignment.Start))
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             for (i in 0..4) { SkillmeaCodeBox(code, i, focusRequester) }
         }
         Spacer(Modifier.height(16.dp))
-        SkillmeaButton("Verify email", {}, enabled = code.length == 5)
+        SkillmeaButton("Verify email", {
+            viewModel.sendCode(code)
+        },
+            enabled = code.length == 5 && apiStatus !is ApiCom.Loading,
+            progress = apiStatus is ApiCom.Loading
+        )
         Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Wrong email?", style = textStyleBodyRegular)
-            Text("Send to different email", style = textStyleBodySemiBold, modifier = Modifier.clickable{}.padding(8.dp))
+            Text("Send to different email", style = textStyleBodySemiBold, modifier = Modifier
+                .clickable {}
+                .padding(8.dp))
         }
     }
 }
 
 @Composable
-private fun ColumnScope.CreateAccountScreenStep3() {
+private fun ColumnScope.CreateAccountScreenStep3(
+    viewModel: CreateEmailAccountViewModel,
+    onSuccess: () -> Unit
+) {
     var password by remember { mutableStateOf("") }
     var passwordStatus by remember { mutableStateOf(false) }
+
+    val apiStatus by viewModel.passwordSharedFlow.collectAsState(ApiCom.Idle())
+
+    LaunchedEffect(apiStatus) {
+        if (apiStatus is ApiCom.Success) { onSuccess() }
+    }
+
     Column(modifier = Modifier
         .weight(1f)
         .fillMaxWidth()) {
         SkillmeaFullPasswordInput(password, { password = it }, { passwordStatus = it })
         Spacer(Modifier.height(16.dp))
-        SkillmeaButton("Continue", { }, enabled = passwordStatus)
+        SkillmeaButton("Continue", { viewModel.sendPassword(password) },
+            enabled = passwordStatus && apiStatus !is ApiCom.Loading,
+            progress = apiStatus is ApiCom.Loading
+        )
     }
 }
 
@@ -193,28 +250,33 @@ private fun RowScope.SkillmeaCodeBox(
     SkillmeaTextField(
         value = code.getOrNull(position)?.toString() ?: "",
         onValueChange = {},
-        modifier = Modifier.weight(1f).onFocusChanged { focusRequester.requestFocus() },
+        modifier = Modifier
+            .weight(1f)
+            .onFocusChanged { focusRequester.requestFocus() },
         center = true,
         glow = code.length == position
     )
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showSystemUi = true)
 @Composable
 private fun CreateAccountScreenPreview1() {
-    CreateAccountScreenContent("Add your email 1/3", { CreateAccountScreenStep1() }, onBack = {}, step = 0)
+    CreateAccountScreenContent("Add your email 1/3", { CreateAccountScreenStep1(CreateEmailAccountViewModel()) {} }, onBack = {}, step = 0)
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showSystemUi = true)
 @Composable
 private fun CreateAccountScreenPreview2() {
-    CreateAccountScreenContent("Verify your email 2/3", { CreateAccountScreenStep2("jon@snow.com") }, onBack = {}, step = 1)
+    CreateAccountScreenContent("Verify your email 2/3", { CreateAccountScreenStep2(CreateEmailAccountViewModel(), "jon@snow.com") {} }, onBack = {}, step = 1)
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showSystemUi = true)
 @Composable
 private fun CreateAccountScreenPreview3() {
-    CreateAccountScreenContent("Create your password 3/3", { CreateAccountScreenStep3() }, onBack = {}, step = 2)
+    CreateAccountScreenContent("Create your password 3/3", { CreateAccountScreenStep3(CreateEmailAccountViewModel()) {} }, onBack = {}, step = 2)
 }
 
 @Preview(showSystemUi = true)
