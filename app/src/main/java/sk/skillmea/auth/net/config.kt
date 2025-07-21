@@ -22,6 +22,8 @@ data class CheckEmailRequest(val email: String)
 data class CheckEmailResponse(val registerToken: String)
 data class CheckCodeRequest(val code: String, val registrationToken: String)
 data class CheckPasswordRequest(val password: String, val registrationToken: String)
+data class LoginRequest(val email: String, val password: String)
+data class LoginResponse(val authToken: String)
 
 interface AuthService {
 
@@ -33,4 +35,7 @@ interface AuthService {
 
     @POST("/auth/signin/password")
     suspend fun checkPassword(@Body body: CheckPasswordRequest)
+
+    @POST("/auth/signin/login")
+    suspend fun login(@Body body: LoginRequest): LoginResponse
 }

@@ -14,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import sk.skillmea.auth.data.getAuthToken
+import sk.skillmea.auth.data.preferences
 import sk.skillmea.auth.ui.screen.CreateEmailAccountScreen
 import sk.skillmea.auth.ui.screen.CreateEmailAccountSuccessfulScreen
 import sk.skillmea.auth.ui.screen.LandingScreen
@@ -38,9 +40,10 @@ sealed interface Screen {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        preferences = getSharedPreferences("AuthPref", MODE_PRIVATE)
         enableEdgeToEdge()
         setContent {
-            var backStack by remember { mutableStateOf(listOf<Screen>(Screen.Landing)) }
+            var backStack by remember { mutableStateOf(listOf(if (getAuthToken() == null) Screen.Landing else Screen.Home)) }
             val goBack = { backStack = backStack.dropLast(1) }
             BackHandler(backStack.size > 1, goBack)
             AnimatedContent(backStack.last()) {
@@ -51,8 +54,8 @@ class MainActivity : ComponentActivity() {
                     Screen.CreateEmailAccount -> CreateEmailAccountScreen(goBack) { backStack += Screen.CreateEmailAccountSuccess }
                     Screen.CreateEmailAccountSuccess -> CreateEmailAccountSuccessfulScreen { backStack = backStack.dropLastWhile { it !is Screen.Landing } + Screen.LogIn }
 
-                    Screen.LogIn -> LogInScreen(onBack = goBack, onEmailLogIn = { backStack += Screen.LoginWithEmail})
-                    Screen.LoginWithEmail -> LoginWithEmailScreen(onBack = goBack, onForgotPassword = { backStack += Screen.ResetPassword })
+                    Screen.LogIn -> LogInScreen(onBack = goBack, onEmailLogIn = { backStack += Screen.LoginWithEmail })
+                    Screen.LoginWithEmail -> LoginWithEmailScreen(onBack = goBack, onForgotPassword = { backStack += Screen.ResetPassword }, onSuccess = { backStack += Screen.Home })
                     Screen.ResetPassword -> ResetPasswordScreen(onBack = goBack)
                     Screen.ResetPasswordSuccess -> ResetPasswordSuccessfulScreen(email = "???", onBack = goBack)
 

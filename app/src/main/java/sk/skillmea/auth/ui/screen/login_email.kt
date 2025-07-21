@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.colorError
 import sk.skillmea.auth.ui.textStyleBodyRegular
@@ -36,11 +39,22 @@ import sk.skillmea.auth.util.isValidEmail
 @Composable
 fun LoginWithEmailScreen(
     onBack: () -> Unit,
-    onForgotPassword: () -> Unit
+    onForgotPassword: () -> Unit,
+    onSuccess: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+
+    val viewModel = viewModel<LoginEmailViewModel>()
+    val login by viewModel.loginSharedFlow.collectAsState(ApiCom.Idle())
+
+    LaunchedEffect(login) {
+        if (login is ApiCom.Success) {
+            onSuccess()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +75,9 @@ fun LoginWithEmailScreen(
             }
             Spacer(Modifier.height(16.dp))
         }
-        SkillmeaButton("Log in", {}, enabled = email.isValidEmail && password.length >= 8)
+        SkillmeaButton("Log in", {
+            viewModel.login(email, password)
+        }, enabled = email.isValidEmail && password.length >= 8)
         Spacer(Modifier.height(16.dp))
         Text("Forgot password?", modifier = Modifier.clickable { onForgotPassword() }.padding(8.dp), style = textStyleBodySemiBold)
         Spacer(Modifier.weight(1f))
@@ -73,5 +89,5 @@ fun LoginWithEmailScreen(
 @Preview(showSystemUi = true)
 @Composable
 private fun LoginWithEmailScreenPreview() {
-    LoginWithEmailScreen({}, {})
+    LoginWithEmailScreen({}, {}, {})
 }
