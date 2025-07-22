@@ -1,5 +1,6 @@
 package sk.skillmea.auth.ui.widget
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,16 +19,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetPasswordOption
+import androidx.credentials.GetPublicKeyCredentialOption
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import sk.skillmea.auth.BuildConfig
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.colorGrey300
 import sk.skillmea.auth.ui.colorGrey900
@@ -110,13 +122,46 @@ fun SkillmeaFacebookButton(
 
 @Composable
 fun SkillmeaGoogleButton(
-    onClick: () -> Unit,
+    onTokenReceived: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val credentialManager = CredentialManager.create(context)
+
     SkillmeaSocialButton(
         painterResource(R.drawable.ic_google),
         "Continue with Google",
-        onClick,
+        {
+            val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+                .setServerClientId(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
+                .build()
+
+            val request: GetCredentialRequest = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
+
+            coroutineScope.launch(Dispatchers.IO) {
+                try {
+                    val result = credentialManager.getCredential(
+                        request = request,
+                        context = context,
+                    )
+                    if (result.credential.type == "com.google.android.libraries.identity.googleid.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL") {
+                        result.credential.data.getString("com.google.android.libraries.identity.googleid.BUNDLE_KEY_ID_TOKEN")?.let {
+                            onTokenReceived(it)
+                        } ?: run {
+
+                        }
+                    } else {
+
+                    }
+                } catch (e: GetCredentialException) {
+                    // Handle failure
+                }
+            }
+            // google sign in
+        },
         modifier
     )
 }
