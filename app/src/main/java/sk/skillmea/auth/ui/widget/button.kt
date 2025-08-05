@@ -1,5 +1,7 @@
 package sk.skillmea.auth.ui.widget
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +31,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import sk.skillmea.auth.R
 import sk.skillmea.auth.ui.colorGrey300
 import sk.skillmea.auth.ui.colorGrey900
@@ -97,13 +105,38 @@ private fun SkillmeaSocialButton(
 
 @Composable
 fun SkillmeaFacebookButton(
-    onClick: () -> Unit,
+    onToken: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val callbackManager = CallbackManager.Factory.create()
+    val loginManager = LoginManager.getInstance()
+
+    val launcher = rememberLauncherForActivityResult(loginManager.createLogInActivityResultContract(callbackManager, null)) {
+        callbackManager.onActivityResult(it.requestCode, it.resultCode, it.data)
+    }
+
+    DisposableEffect(Unit) {
+        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult) {
+                onToken(result.accessToken.token)
+            }
+
+            override fun onCancel() {
+                Log.d("FacebookLogin", "Cancelled")
+            }
+
+            override fun onError(error: FacebookException) {
+                Log.e("FacebookLogin", "Error: ${error.message}")
+            }
+        })
+
+        onDispose { loginManager.unregisterCallback(callbackManager) }
+    }
+
     SkillmeaSocialButton(
         painterResource(R.drawable.ic_facebook),
         "Continue with Facebook",
-        onClick,
+        { launcher.launch(listOf("email", "public_profile")) },
         modifier
     )
 }

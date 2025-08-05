@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import com.facebook.FacebookSdk
 import sk.skillmea.auth.ui.screen.CreateEmailAccountScreen
 import sk.skillmea.auth.ui.screen.CreateEmailAccountSuccessfulScreen
 import sk.skillmea.auth.ui.screen.LandingScreen
@@ -38,6 +39,7 @@ sealed interface Screen {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FacebookSdk.setAutoInitEnabled(true)
         enableEdgeToEdge()
         setContent {
             var backStack by remember { mutableStateOf(listOf<Screen>(Screen.Landing)) }

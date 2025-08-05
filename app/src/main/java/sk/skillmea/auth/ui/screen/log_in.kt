@@ -1,5 +1,6 @@
 package sk.skillmea.auth.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +41,7 @@ fun LogInScreen(onBack: () -> Unit, onEmailLogIn: () -> Unit) {
         Spacer(Modifier.height(20.dp))
         Text("or", style = textStyleBodySemiBold)
         Spacer(Modifier.height(20.dp))
-        SkillmeaFacebookButton({})
+        SkillmeaFacebookButton({ Log.e("MyApp", "Facebook token = $it") })
         Spacer(Modifier.height(12.dp))
         SkillmeaGoogleButton({})
         Spacer(Modifier.weight(1f))
